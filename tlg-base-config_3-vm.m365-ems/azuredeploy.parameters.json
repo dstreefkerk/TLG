@@ -20,14 +20,20 @@
     "adminPassword": {
       "value": ""
     },
-    "vmSize": {
-      "value": "Standard_DS2_v2"
+    "vmSizeDc": {
+      "value": "Standard_B1ms"
+    },
+    "vmSizeClient": {
+      "value": "Standard_D2s_v3"
+    },
+    "shutDownTime": {
+      "value": "16:00:00"
     },
     "dnsLabelPrefix": {
       "value": ""
     },
     "_artifactsLocation": {
-      "value": "https://raw.githubusercontent.com/maxskunkworks/tlg/master/tlg-base-config_3-vm.m365-ems"
+      "value": "https://raw.githubusercontent.com/gary-walker-82/TLG/master/tlg-base-config_3-vm.m365-ems"
     },
     "_artifactsLocationSasToken": {
       "value": ""

@@ -1,9 +1,12 @@
 ﻿{
-  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
     "SharedVmConfig": {
       "type": "object"
+    },
+    "vmSize": {
+      "type": "string"
     },
     "vmName": {
       "type": "string"
@@ -16,12 +19,14 @@
     },
     "configurationFunction": {
       "type": "object"
+    },
+    "shutDownTime": {
+      "type": "string"
     }
   },
   "variables": {
     "firstExtensionSuffix": "/InstallDomainController",
-    "firstExtensionName": "[concat(parameters('vmName'),variables('firstExtensionSuffix'))]",
-    "firstExtensionId": "[concat(parameters('vmName'),'/extensions',variables('firstExtensionSuffix'))]"
+    "firstExtensionName": "[concat(parameters('vmName'),variables('firstExtensionSuffix'))]"
 
   },
   "resources": [
@@ -32,7 +37,7 @@
       "location": "[parameters('SharedVmConfig').location]",
       "properties": {
         "hardwareProfile": {
-          "vmSize": "[parameters('SharedVmConfig').vmSize]"
+          "vmSize": "[parameters('vmSize')]"
         },
         "osProfile": {
           "computerName": "[parameters('vmName')]",
@@ -50,11 +55,6 @@
             "createOption": "FromImage"
           },
           "dataDisks": [
-            {
-              "createOption": "Empty",
-              "diskSizeGB": 20,
-              "lun": 0
-            }
           ]
         },
         "networkProfile": {
@@ -71,7 +71,8 @@
           }
         }
       },
-      "resources": []
+      "resources": [
+      ]
     },
     {
       "type": "Microsoft.Compute/virtualMachines/extensions",
@@ -123,7 +124,8 @@
         "typeHandlerVersion": "2.1",
         "autoUpgradeMinorVersion": true,
         "settings": {
-          "properties": []
+          "properties": [
+          ]
         }
       }
     },
@@ -157,6 +159,26 @@
           }
         },
         "protectedSettings": null
+      }
+    },
+    {
+      "type": "Microsoft.DevTestLab/schedules",
+      "name": "shutdown-computevm-mydockervm",
+      "apiVersion": "2016-05-15",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[concat('Microsoft.Compute/virtualMachines/',parameters('vmName'))]"
+      ],
+      "properties": {
+        "status": "Enabled",
+        "taskType": "ComputeVmShutdownTask",
+        "dailyRecurrence": {
+          "time": "[parameters('shutDownTime')]"
+        },
+        "timeZoneId": "Greenwich Mean Time",
+        "notificationSettings": {
+        },
+        "targetResourceId": "[resourceId('Microsoft.Compute/virtualMachines',parameters('vmName'))]"
       }
     }
   ]
