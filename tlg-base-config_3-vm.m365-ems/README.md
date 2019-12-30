@@ -26,7 +26,7 @@ The **Simulated intranet for Microsoft 365 Test Lab Guides** template provisions
 You can deploy this template in one of two ways:
 
 - Click the **Deploy to Azure** button to open the deployment UI in the Azure portal
-- Execute the PowerShell script at https://raw.githubusercontent.com/maxskunkworks/tlg/master/tlg-base-config_3-vm.m365-ems/scripts/Deploy-TLG.ps1 on your local computer.
+- Execute the PowerShell script at https://raw.githubusercontent.com/gary-walker-82/tlg/master/tlg-base-config_3-vm.m365-ems/scripts/Deploy-TLG.ps1 on your local computer.
 
 Prior to deploying the template, have the following information ready:
 

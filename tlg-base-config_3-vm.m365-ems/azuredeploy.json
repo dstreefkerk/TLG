@@ -82,7 +82,7 @@
       "metadata": {
         "description": "GitHub location of template files."
       },
-      "defaultValue": "https://raw.githubusercontent.com/maxskunkworks/tlg/master/tlg-base-config_3-vm.m365-ems"
+      "defaultValue": "https://raw.githubusercontent.com/gary-walker-82/tlg/master/tlg-base-config_3-vm.m365-ems"
     },
     "_artifactsLocationSasToken": {
       "type": "securestring",

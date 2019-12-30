@@ -162,7 +162,7 @@
         "dailyRecurrence": {
           "time": "[parameters('shutDownTime')]"
         },
-        "timeZoneId": "Greenwich Mean Time",
+        "timeZoneId": "Greenwich Standard Time",
         "notificationSettings": {
         },
         "targetResourceId": "[resourceId('Microsoft.Compute/virtualMachines',parameters('vmName'))]"
