@@ -69,7 +69,7 @@
       "metadata": {
         "description": "Select a shutdown time for all the VMs in your deployment. e.g, !7:00:00"
       },
-      "defaultValue": "16:00:00"
+      "defaultValue": "1600"
     },
     "dnsLabelPrefix": {
       "type": "string",

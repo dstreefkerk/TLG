@@ -150,7 +150,7 @@
     },
     {
       "type": "Microsoft.DevTestLab/schedules",
-      "name": "shutdown-computevm-mydockervm",
+      "name": "[concat('shutdown-computevm-',parameters('vmName'))]",
       "apiVersion": "2016-05-15",
       "location": "[resourceGroup().location]",
       "dependsOn": [
