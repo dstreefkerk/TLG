@@ -147,7 +147,7 @@
           "type": "extensions",
           "location": "[parameters('SharedVmConfig').location]",
           "apiVersion": "2017-03-30",
-          "dependsOn": ["[variables('names').vm]"],
+          "dependsOn": ["[parameters('vmName')]"],
           "properties": {
             "publisher": "Microsoft.Compute",
             "type": "CustomScriptExtension",
