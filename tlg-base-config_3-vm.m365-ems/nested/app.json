@@ -92,6 +92,7 @@
     "names": {
       "vm": "[concat('vm-vsts-', substring(uniqueString(resourceGroup().id), 0, 6))]"
     },
+    "singleQuote": "'",
     "powerShell": {
       "script": "InstallVstsAgent.ps1",
       "folder": "scripts",
