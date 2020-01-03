@@ -19,11 +19,99 @@
     },
     "shutDownTime": {
       "type": "string"
+    },
+    "vstsPersonalAccessToken": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The personal access token to connect to VSTS"
+      }
+    },
+    "vstsAgentCount": {
+      "type": "int",
+      "metadata": {
+        "description": "The number of Visual Studio Team Services agents to be configured on the Virtual Machine. Default is 3"
+      },
+      "allowedValues": [1, 2, 3, 4],
+      "defaultValue": 3
+    },
+    "vstsDeploymentGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The Visual Studio Team Services agent deployment group name"
+      }
+    },
+    "vstsCollectionName": {
+      "type": "string",
+      "metadata": {
+        "description": "The Visual Studio Team Services agent deployment collection name"
+      }
+    },
+    "vstsProjectName": {
+      "type": "string",
+      "metadata": {
+        "description": "The Visual Studio Team Services agent deployment project name"
+      }
+    },
+    "vstsServerUrl": {
+      "type": "string",
+      "metadata": {
+        "description": "Your DevOps URL"
+      }
+    },
+    "modules": {
+      "type": "array",
+      "metadata": {
+        "description": "Enter the Module(s) to install including the Version"
+      },
+      "defaultValue": [
+        {
+          "name": "AzureRM",
+          "version": "5.6.0"
+        },
+        {
+          "name": "AzureAD",
+          "version": "2.0.1.3"
+        },
+        {
+          "name": "posh-git",
+          "version": "0.7.1"
+        }
+      ]
+    },
+    "_artifactsLocation": {
+      "type": "string",
+      "metadata": {
+        "description": "The base URI where artifacts required by this template are located. When the template is deployed using the accompanying scripts, a private location in the subscription will be used and this value will be automatically generated."
+      },
+      "defaultValue": "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/201-vm-vsts-agent"
+    },
+    "_artifactsLocationSasToken": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The sasToken required to access _artifactsLocation.  When the template is deployed using the accompanying scripts, a sasToken will be automatically generated."
+      },
+      "defaultValue": ""
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Location for all resources."
+      }
     }
   },
   "variables": {
     "firstExtensionSuffix": "/JoinDomain",
-    "firstExtensionName": "[concat(parameters('vmName'),variables('firstExtensionSuffix'))]"
+    "firstExtensionName": "[concat(parameters('vmName'),variables('firstExtensionSuffix'))]",
+    "names": {
+      "vm": "[concat('vm-vsts-', substring(uniqueString(resourceGroup().id), 0, 6))]"
+    },
+    "powerShell": {
+      "script": "InstallVstsAgent.ps1",
+      "folder": "scripts",
+      "parameters": "[concat(' -PersonalAccessToken ', parameters('vstsPersonalAccessToken'), ' -AgentCount ', parameters('vstsAgentCount'), ' -Modules ', variables('modules'), '-DeploymentGroupName' , parameters('vstsDeploymentGroupName'), ' -CollectionName ', parameters('vstsCollectionName'), ' -ProjectName ', parameters('vstsProjectName'), ' -ServerUrl ', parameters('vstsServerUrl))]"
+    },
+    "modules": "[replace(replace(replace(replace(replace(string(parameters('modules')), '[{\"', '@(@{'), '\":\"', concat(' = ', variables('singleQuote'))), '\",\"', concat(variables('singleQuote'), '; ')), '\"},{\"', concat(variables('singleQuote'), '}, @{')), '\"}]', concat(variables('singleQuote'), '})'))]"
   },
   "resources": [
     {
@@ -50,8 +138,7 @@
           "osDisk": {
             "createOption": "FromImage"
           },
-          "dataDisks": [
-          ]
+          "dataDisks": []
         },
         "networkProfile": {
           "networkInterfaces": [
@@ -92,9 +179,7 @@
           "Password": "[parameters('SharedVmConfig').adminPassword]"
         }
       },
-      "dependsOn": [
-        "[parameters('vmName')]"
-      ]
+      "dependsOn": ["[parameters('vmName')]"]
     },
     {
       "type": "Microsoft.Compute/virtualMachines/extensions",
@@ -111,8 +196,7 @@
         "typeHandlerVersion": "2.9",
         "autoUpgradeMinorVersion": true,
         "protectedSettings": {
-          "Items": {
-          }
+          "Items": {}
         },
         "settings": {
           "modulesUrl": "[concat(parameters('modulesURL'),'/AppConfig.ps1.zip')]",
@@ -126,7 +210,6 @@
       }
     },
     {
-
       "type": "Microsoft.Compute/virtualMachines/extensions",
       "name": "[concat(parameters('vmName'),'/BGInfo')]",
       "apiVersion": "2017-03-30",
@@ -137,18 +220,14 @@
         "[concat('Microsoft.Compute/virtualMachines/',parameters('vmName'),'/extensions/JoinDomain')]"
       ],
       "properties": {
-
         "publisher": "Microsoft.Compute",
         "type": "BGInfo",
         "typeHandlerVersion": "2.1",
         "autoUpgradeMinorVersion": true,
         "settings": {
-          "properties": [
-          ]
+          "properties": []
         }
-
       }
-
     },
     {
       "type": "Microsoft.Compute/virtualMachines/extensions",
@@ -197,12 +276,30 @@
           "time": "[parameters('shutDownTime')]"
         },
         "timeZoneId": "Greenwich Standard Time",
-        "notificationSettings": {
-        },
+        "notificationSettings": {},
         "targetResourceId": "[resourceId('Microsoft.Compute/virtualMachines',parameters('vmName'))]"
+      }
+    },
+    {
+      "name": "vstsAgent",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "location": "[parameters('location')]",
+      "apiVersion": "2017-12-01",
+      "dependsOn": ["[variables('names').vm]"],
+      "properties": {
+        "publisher": "Microsoft.Compute",
+        "type": "CustomScriptExtension",
+        "typeHandlerVersion": "1.9",
+        "settings": {
+          "fileUris": [
+            "[uri(parameters('_artifactsLocation'), concat(variables('powerShell').folder, '/', variables('powerShell').script, parameters('_artifactsLocationSasToken')))]"
+          ]
+        },
+        "protectedSettings": {
+          "commandToExecute": "[concat('powershell.exe -ExecutionPolicy Unrestricted -Command \"& {', './', variables('powerShell').script, ' ', variables('powerShell').parameters, '}\"')]"
+        }
       }
     }
   ],
-  "outputs": {
-  }
+  "outputs": {}
 }
