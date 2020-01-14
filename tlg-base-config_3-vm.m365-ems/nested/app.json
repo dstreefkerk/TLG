@@ -20,6 +20,10 @@
     "shutDownTime": {
       "type": "string"
     },
+    "SQLVersion": {
+      "type": "string"
+    },
+
     "vstsPersonalAccessToken": {
       "type": "securestring",
       "metadata": {
@@ -31,7 +35,12 @@
       "metadata": {
         "description": "The number of Visual Studio Team Services agents to be configured on the Virtual Machine. Default is 3"
       },
-      "allowedValues": [1, 2, 3, 4],
+      "allowedValues": [
+        1,
+        2,
+        3,
+        4
+      ],
       "defaultValue": 3
     },
     "vstsDeploymentGroupName": {
@@ -89,14 +98,19 @@
   "variables": {
     "firstExtensionSuffix": "/JoinDomain",
     "firstExtensionName": "[concat(parameters('vmName'),variables('firstExtensionSuffix'))]",
+    "singleQuote": "'",
     "names": {
       "vm": "[concat('vm-vsts-', substring(uniqueString(resourceGroup().id), 0, 6))]"
     },
-    "singleQuote": "'",
     "powerShell": {
       "script": "InstallVstsAgent.ps1",
       "folder": "scripts",
       "parameters": "[concat(' -PersonalAccessToken ', parameters('vstsPersonalAccessToken'), ' -AgentCount ', parameters('vstsAgentCount'), ' -Modules ', variables('modules'), ' -DeploymentGroupName ' , parameters('vstsDeploymentGroupName'), ' -CollectionName ', parameters('vstsCollectionName'), ' -ProjectName ', parameters('vstsProjectName'), ' -ServerUrl ', parameters('vstsServerUrl'))]"
+    },
+    "sqlPowerShell": {
+      "script": "chocolatey.ps1",
+      "folder": "scripts",
+      "parameters": "[concat(' -Packages ''sql-server-', parameters('SQLVersion'),', sql-server-management-studio''')]"
     },
     "modules": "[replace(replace(replace(replace(replace(string(parameters('modules')), '[{\"', '@(@{'), '\":\"', concat(' = ', variables('singleQuote'))), '\",\"', concat(variables('singleQuote'), '; ')), '\"},{\"', concat(variables('singleQuote'), '}, @{')), '\"}]', concat(variables('singleQuote'), '})'))]"
   },
@@ -125,7 +139,8 @@
           "osDisk": {
             "createOption": "FromImage"
           },
-          "dataDisks": []
+          "dataDisks": [
+          ]
         },
         "networkProfile": {
           "networkInterfaces": [
@@ -147,7 +162,9 @@
           "type": "extensions",
           "location": "[parameters('SharedVmConfig').location]",
           "apiVersion": "2017-03-30",
-          "dependsOn": ["[parameters('vmName')]"],
+          "dependsOn": [
+            "[parameters('vmName')]"
+          ],
           "properties": {
             "publisher": "Microsoft.Compute",
             "type": "CustomScriptExtension",
@@ -188,7 +205,9 @@
           "Password": "[parameters('SharedVmConfig').adminPassword]"
         }
       },
-      "dependsOn": ["[parameters('vmName')]"]
+      "dependsOn": [
+        "[parameters('vmName')]"
+      ]
     },
     {
       "type": "Microsoft.Compute/virtualMachines/extensions",
@@ -205,7 +224,8 @@
         "typeHandlerVersion": "2.9",
         "autoUpgradeMinorVersion": true,
         "protectedSettings": {
-          "Items": {}
+          "Items": {
+          }
         },
         "settings": {
           "modulesUrl": "[concat(parameters('modulesURL'),'/AppConfig.ps1.zip')]",
@@ -234,7 +254,8 @@
         "typeHandlerVersion": "2.1",
         "autoUpgradeMinorVersion": true,
         "settings": {
-          "properties": []
+          "properties": [
+          ]
         }
       }
     },
@@ -285,10 +306,57 @@
           "time": "[parameters('shutDownTime')]"
         },
         "timeZoneId": "Greenwich Standard Time",
-        "notificationSettings": {},
+        "notificationSettings": {
+        },
         "targetResourceId": "[resourceId('Microsoft.Compute/virtualMachines',parameters('vmName'))]"
+      }
+    },
+    {
+      "name": "vstsAgent",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "location": "[parameters('SharedVmConfig').location]",
+      "apiVersion": "2017-12-01",
+      "dependsOn": [
+        "[variables('names').vm]"
+      ],
+      "properties": {
+        "publisher": "Microsoft.Compute",
+        "type": "CustomScriptExtension",
+        "typeHandlerVersion": "1.9",
+        "settings": {
+          "fileUris": [
+            "[uri(parameters('_artifactsLocation'), concat(variables('powerShell').folder, '/', variables('powerShell').script, parameters('SharedVmConfig').SasToken))]"
+          ]
+        },
+        "protectedSettings": {
+          "commandToExecute": "[concat('powershell.exe -ExecutionPolicy Unrestricted -Command \"& {', './', variables('powerShell').script, ' ', variables('powerShell').parameters, '}\"')]"
+        }
+      }
+    },
+    {
+      "name": "sqlInstall",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "location": "[parameters('SharedVmConfig').location]",
+      "apiVersion": "2017-12-01",
+      "dependsOn": [
+        "[variables('names').vm]"
+      ],
+      "properties": {
+        "publisher": "Microsoft.Compute",
+        "type": "CustomScriptExtension",
+        "typeHandlerVersion": "1.9",
+        "settings": {
+          "fileUris": [
+            "[uri(parameters('_artifactsLocation'), concat(variables('sqlPowerShell').folder, '/', variables('sqlPowerShell').script, parameters('SharedVmConfig').SasToken))]"
+          ]
+        },
+        "protectedSettings": {
+          "commandToExecute": "[concat('powershell.exe -ExecutionPolicy Unrestricted -Command \"& {', './', variables('sqlPowerShell').script, ' ', variables('powerShell').parameters, '}\"')]"
+
+        }
       }
     }
   ],
-  "outputs": {}
+  "outputs": {
+  }
 }

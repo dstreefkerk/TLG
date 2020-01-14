@@ -18,7 +18,10 @@
     },
     "serverOS": {
       "type": "string",
-      "allowedValues": ["Windows Server 2016", "Windows Server 2012 R2"],
+      "allowedValues": [
+        "Windows Server 2016",
+        "Windows Server 2012 R2"
+      ],
       "metadata": {
         "description": "The OS of application servers in your deployment."
       },
@@ -26,11 +29,25 @@
     },
     "clientOS": {
       "type": "string",
-      "allowedValues": ["Windows Server 2016", "Windows 10"],
+      "allowedValues": [
+        "Windows Server 2016",
+        "Windows 10"
+      ],
       "metadata": {
         "description": "The OS of client VMs in your deployment. You can choose Windows 10 ONLY if your Azure subscription supports Windows 10 gallery images. See the README for more details."
       },
       "defaultValue": "Windows Server 2016"
+    },
+    "SQLVersion": {
+      "type": "string",
+      "allowedValues": [
+        "2017",
+        "2019"
+      ],
+      "metadata": {
+        "description": "The Developer version of SQL to install in your App Vm."
+      },
+      "defaultValue": "2019"
     },
     "adminUsername": {
       "type": "string",
@@ -96,7 +113,12 @@
       "metadata": {
         "description": "The number of Visual Studio Team Services agents to be configured on the Virtual Machine. Default is 3"
       },
-      "allowedValues": [1, 2, 3, 4],
+      "allowedValues": [
+        1,
+        2,
+        3,
+        4
+      ],
       "defaultValue": 3
     },
     "vstsDeploymentGroupName": {
@@ -236,7 +258,9 @@
       "comments": "This is the virtual network for the deployment.",
       "properties": {
         "addressSpace": {
-          "addressPrefixes": ["[variables('network').subnet]"]
+          "addressPrefixes": [
+            "[variables('network').subnet]"
+          ]
         },
         "dhcpOptions": {
           "dnsServers": "[variables('VMs').adNicIP]"
@@ -357,7 +381,9 @@
           }
         ],
         "dnsSettings": {
-          "dnsServers": ["[variables('VMs').adNicIP]"],
+          "dnsServers": [
+            "[variables('VMs').adNicIP]"
+          ],
           "internalDomainNameSuffix": "[parameters('domainName')]"
         }
       }
@@ -388,7 +414,9 @@
           }
         ],
         "dnsSettings": {
-          "dnsServers": ["[variables('VMs').adNicIP]"],
+          "dnsServers": [
+            "[variables('VMs').adNicIP]"
+          ],
           "internalDomainNameSuffix": "[parameters('domainName')]"
         }
       }
@@ -489,6 +517,9 @@
           },
           "_artifactsLocation": {
             "value": "[parameters('_artifactsLocation')]"
+          },
+          "SQLVersion": {
+            "value": "[parameters('SQLVersion')]"
           }
         }
       }
@@ -547,9 +578,6 @@
           },
           "_artifactsLocationSasToken": {
             "value": "[parameters('_artifactsLocationSasToken')]"
-          },
-          "location": {
-            "value": "[parameters('location')]"
           }
         }
       }
