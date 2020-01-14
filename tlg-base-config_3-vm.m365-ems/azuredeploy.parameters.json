@@ -29,14 +29,29 @@
     "shutDownTime": {
       "value": "16:00:00"
     },
+    "vstsPersonalAccessToken": {
+      "value": ""
+    },
+    "vstsAgentCount": {
+      "value": ""
+    },
+    "vstsDeploymentGroupName": {
+      "value": ""
+    },
+    "vstsCollectionName": {
+      "value": ""
+    },
+    "vstsProjectName": {
+      "value": ""
+    },
+    "vstsServerUrl": {
+      "value": ""
+    },
     "dnsLabelPrefix": {
       "value": ""
     },
     "_artifactsLocation": {
       "value": "https://raw.githubusercontent.com/gary-walker-82/TLG/master/tlg-base-config_3-vm.m365-ems"
-    },
-    "_artifactsLocationSasToken": {
-      "value": ""
     }
   }
 }
