@@ -38,6 +38,17 @@
       },
       "defaultValue": "Windows Server 2016"
     },
+    "SQLVersion": {
+      "type": "string",
+      "allowedValues": [
+        "2017",
+        "2019"
+      ],
+      "metadata": {
+        "description": "The Developer version of SQL to install in your App Vm."
+      },
+      "defaultValue": "2019"
+    },
     "adminUsername": {
       "type": "string",
       "metadata": {
@@ -420,6 +431,9 @@
           },
           "shutDownTime": {
             "value": "[parameters('shutDownTime')]"
+          },
+          "SQLVersion": {
+            "value": "[parameters('SQLVersion')]"
           }
         }
       }
