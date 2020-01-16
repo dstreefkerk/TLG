@@ -23,7 +23,6 @@
     "SQLVersion": {
       "type": "string"
     },
-
     "vstsPersonalAccessToken": {
       "type": "securestring",
       "metadata": {
