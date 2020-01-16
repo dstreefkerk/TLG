@@ -333,8 +333,7 @@
         },
         "targetResourceId": "[resourceId('Microsoft.Compute/virtualMachines',parameters('vmName'))]"
       }
-    },
-
+    }
   ],
   "outputs": {
   }
