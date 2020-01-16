@@ -29,6 +29,9 @@
     "shutDownTime": {
       "value": "16:00:00"
     },
+    "SQLVersion": {
+      "value": ""
+    },
     "vstsPersonalAccessToken": {
       "value": ""
     },
@@ -52,6 +55,12 @@
     },
     "_artifactsLocation": {
       "value": "https://raw.githubusercontent.com/gary-walker-82/TLG/master/tlg-base-config_3-vm.m365-ems"
+    },
+    "modules": {
+      "value": ""
+    },
+    "_artifactsLocationSasToken": {
+      "value": ""
     }
   }
 }
