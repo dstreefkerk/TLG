@@ -480,9 +480,6 @@
           },
           "_artifactsLocation": {
             "value": "[parameters('_artifactsLocation')]"
-          },
-          "SQLVersion": {
-            "value": "[parameters('SQLVersion')]"
           }
         }
       }
@@ -578,33 +575,6 @@
           },
           "shutDownTime": {
             "value": "[parameters('shutDownTime')]"
-          },
-          "vstsPersonalAccessToken": {
-            "value": "[parameters('vstsPersonalAccessToken')]"
-          },
-          "vstsAgentCount": {
-            "value": "[parameters('vstsAgentCount')]"
-          },
-          "vstsDeploymentGroupName": {
-            "value": "[parameters('vstsDeploymentGroupName')]"
-          },
-          "vstsCollectionName": {
-            "value": "[parameters('vstsCollectionName')]"
-          },
-          "vstsProjectName": {
-            "value": "[parameters('vstsProjectName')]"
-          },
-          "vstsServerUrl": {
-            "value": "[parameters('vstsServerUrl')]"
-          },
-          "modules": {
-            "value": "[parameters('modules')]"
-          },
-          "_artifactsLocation": {
-            "value": "[parameters('_artifactsLocation')]"
-          },
-          "_artifactsLocationSasToken": {
-            "value": "[parameters('_artifactsLocationSasToken')]"
           }
         }
       }
