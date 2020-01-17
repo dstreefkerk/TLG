@@ -106,7 +106,7 @@
       "resources": [
         {
           "name": "vstsAgent",
-          "type": "Microsoft.Compute/virtualMachines/extensions",
+          "type": "extensions",
           "location": "[parameters('SharedVmConfig').location]",
           "apiVersion": "2017-12-01",
           "dependsOn": [
