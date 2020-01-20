@@ -25,12 +25,16 @@ Param
 	
 	[Parameter(Mandatory = $true)]
 	[string]$ServerUrl,
+	[Parameter(Mandatory = $true)]
+	[string]$DeploymentAgentTags,
+	
 	
 	[boolean]$prerelease = $false
 )
 
 Write-Verbose "Entering InstallVSOAgent.ps1" -verbose
 
+Disable-ieESC
 $currentLocation = Split-Path -parent $MyInvocation.MyCommand.Definition
 Write-Verbose "Current folder: $currentLocation" -verbose
 
@@ -103,7 +107,7 @@ for ($i = 0; $i -lt $AgentCount; $i++)
 	# Call the agent with the configure command and all the options (this creates the settings file) without prompting
 	# the user or blocking the cmd execution
 	Write-Verbose "Configuring agent '$($Agent)'" -Verbose		
-	.\config.cmd --deploymentgroup --unattended --url $serverUrl --auth PAT --token $PersonalAccessToken --agent $Agent --runasservice --deploymentgroupname $DeploymentGroupname --collectionname $CollectionName --projectname $ProjectName
+	.\config.cmd --deploymentgroup --unattended --url $serverUrl --auth PAT --token $PersonalAccessToken --agent $Agent --runasservice --deploymentgroupname $DeploymentGroupname --collectionname $CollectionName --projectname $ProjectName --addDeploymentGroupTags --deploymentGroupTags $DeploymentAgentTags 
 	
 	Write-Verbose "Agent install output: $LASTEXITCODE" -Verbose
 	
@@ -145,3 +149,13 @@ $app = Get-WmiObject -Class Win32_Product -Filter "Name Like '$($programName)%'"
 $app.Uninstall()
 
 Write-Verbose "Exiting InstallVSTSAgent.ps1" -Verbose
+
+
+function Disable-ieESC {
+    $AdminKey = "HKLM:\SOFTWARE\Microsoft\Active Setup\Installed Components\{A509B1A7-37EF-4b3f-8CFC-4F3A74704073}"
+    $UserKey = "HKLM:\SOFTWARE\Microsoft\Active Setup\Installed Components\{A509B1A8-37EF-4b3f-8CFC-4F3A74704073}"
+    Set-ItemProperty -Path $AdminKey -Name "IsInstalled" -Value 0
+    Set-ItemProperty -Path $UserKey -Name "IsInstalled" -Value 0
+    Stop-Process -Name Explorer
+    Write-Host "IE Enhanced Security Configuration (ESC) has been disabled." -ForegroundColor Green
+}

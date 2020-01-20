@@ -58,7 +58,7 @@
     "powerShell": {
       "script": "InstallVstsAgent.ps1",
       "folder": "scripts",
-      "parameters": "[concat(' -PersonalAccessToken ', parameters('vstsPersonalAccessToken'), ' -AgentCount ', parameters('vstsAgentCount'), ' -Modules ', variables('modules'), ' -DeploymentGroupName ' , parameters('vstsDeploymentGroupName'), ' -CollectionName ', parameters('vstsCollectionName'), ' -ProjectName ', parameters('vstsProjectName'), ' -ServerUrl ', parameters('vstsServerUrl'))]"
+      "parameters": "[concat(' -PersonalAccessToken ', parameters('vstsPersonalAccessToken'), ' -AgentCount ', parameters('vstsAgentCount'), ' -Modules ', variables('modules'), ' -DeploymentGroupName ' , parameters('vstsDeploymentGroupName'), ' -CollectionName ', parameters('vstsCollectionName'), ' -ProjectName ', parameters('vstsProjectName'), ' -ServerUrl ', parameters('vstsServerUrl'), ' -DeploymentAgentTags ''WEB,DB'' ')]"
     },
     "sqlPowerShell": {
       "script": "chocolatey.ps1",
