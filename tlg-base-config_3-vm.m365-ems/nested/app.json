@@ -128,7 +128,7 @@
               ]
             },
             "protectedSettings": {
-              "commandToExecute": "[concat('powershell.exe -ExecutionPolicy Unrestricted -Command \"& {', './', variables('powerShell').script, ' ', variables('powerShell').parameters, '}\"')]"
+              "commandToExecute": "[concat('powershell.exe -ExecutionPolicy bypass -File \"& {', './', variables('powerShell').script, ' ', variables('powerShell').parameters, '}\"')]"
             }
           }
         },
@@ -150,7 +150,7 @@
               ]
             },
             "protectedSettings": {
-              "commandToExecute": "[concat('powershell.exe -ExecutionPolicy Unrestricted -Command \"& {', './', variables('sqlPowerShell').script, ' ', variables('powerShell').parameters, '}\"')]"
+              "commandToExecute": "[concat('powershell.exe -ExecutionPolicy bypass -File \"& {', './', variables('sqlPowerShell').script, ' ', variables('powerShell').parameters, '}\"')]"
 
             }
           }
