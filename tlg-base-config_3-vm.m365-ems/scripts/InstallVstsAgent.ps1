@@ -33,8 +33,9 @@ Param
 )
 
 Write-Verbose "Entering InstallVSOAgent.ps1" -verbose
-
+<#
 Disable-ieESC
+
 $currentLocation = Split-Path -parent $MyInvocation.MyCommand.Definition
 Write-Verbose "Current folder: $currentLocation" -verbose
 
@@ -159,3 +160,4 @@ function Disable-ieESC {
     Stop-Process -Name Explorer
     Write-Host "IE Enhanced Security Configuration (ESC) has been disabled." -ForegroundColor Green
 }
+#>

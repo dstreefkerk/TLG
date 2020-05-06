@@ -102,31 +102,7 @@
             "storageUri": "[reference(concat('Microsoft.Storage/storageAccounts/',parameters('SharedVmConfig').storageAccountNamePrefix),'2017-06-01').primaryEndpoints.blob]"
           }
         }
-      },
-      "resources": [
-        {
-          "name": "vstsAgent",
-          "type": "extensions",
-          "location": "[parameters('SharedVmConfig').location]",
-          "apiVersion": "2017-12-01",
-          "dependsOn": [
-            "[parameters('vmName')]"
-          ],
-          "properties": {
-            "publisher": "Microsoft.Compute",
-            "type": "CustomScriptExtension",
-            "typeHandlerVersion": "1.9",
-            "settings": {
-              "fileUris": [
-                "[uri(parameters('_artifactsLocation'), concat(variables('powerShell').folder, '/', variables('powerShell').script, parameters('SharedVmConfig').sasToken))]"
-              ]
-            },
-            "protectedSettings": {
-              "commandToExecute": "[concat('powershell.exe -ExecutionPolicy bypass -File \"& {', './', variables('powerShell').script, ' ', variables('powerShell').parameters, '}\"')]"
-            }
-          }
-        }
-      ]
+      }      
     },
     {
       "type": "Microsoft.Compute/virtualMachines/extensions",
