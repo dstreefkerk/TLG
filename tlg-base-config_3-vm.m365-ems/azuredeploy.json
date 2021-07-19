@@ -66,14 +66,14 @@
       "metadata": {
         "description": "Select a VM size for all VMs in your deployment."
       },
-      "defaultValue": "Standard_DS2_v2"
+      "defaultValue": "Standard_D2s_v3"
     },
     "vmSizeClient": {
       "type": "string",
       "metadata": {
         "description": "Select a VM size for all VMs in your deployment."
       },
-      "defaultValue": "Standard_DS2_v2"
+      "defaultValue": "Standard_D2s_v3"
     },
     "shutDownTime": {
       "type": "string",
@@ -200,7 +200,7 @@
       "clientNicIP": "10.0.0.12",
       "cliPublicIpName": "[concat(parameters('configName'),'-CLI_IP')]",
 
-      "clientOS": "[if(equals(parameters('clientOS'),'Windows Server 2016'),'2016-Datacenter','rs4-pro')]",
+      "clientOS": "[if(equals(parameters('clientOS'),'Windows Server 2016'),'2016-Datacenter','20h1-pro')]",
       "serverOS": "[if(equals(parameters('serverOS'),'Windows Server 2016'),'2016-Datacenter','2012-R2-Datacenter')]"
     },
 
