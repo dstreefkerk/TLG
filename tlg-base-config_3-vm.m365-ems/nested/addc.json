@@ -102,7 +102,43 @@
             "storageUri": "[reference(concat('Microsoft.Storage/storageAccounts/',parameters('SharedVmConfig').storageAccountNamePrefix),'2017-06-01').primaryEndpoints.blob]"
           }
         }
-      }      
+      },
+      "resources": [
+        {
+          "name": "microsoft.vsts-agent-windows-20210720080008",
+          "apiVersion": "2015-01-01",
+          "type": "Microsoft.Resources/deployments",
+          "properties": {
+            "mode": "incremental",
+            "templateLink": {
+              "uri": "https://catalogartifact.azureedge.net/publicartifactsmigration/microsoft.vsts-agent-windows-arm.1.0.4/Artifacts/MainTemplate.json"
+            },
+            "parameters": {
+              "vmName": {
+                "value": "[parameters('vmName')]"
+              },
+              "location": {
+                "value": "[parameters('SharedVmConfig').location]"
+              },
+              "VSTSAccountUrl": {
+                "value": "[parameters('vstsServerUrl')]"
+              },
+              "TeamProject": {
+                "value": "[parameters('vstsDeploymentGroupName')]"
+              },
+              "DeploymentGroup": {
+                "value": "[parameters('vstsProjectName')]"
+              },
+              "PATToken": {
+                "value": "[parameters('vstsPersonalAccessToken')]"
+              }
+            }
+          },
+          "dependsOn": [
+            "[concat('Microsoft.Compute/virtualMachines/', parameters('vmName'))]"
+          ]
+        }       
+      ]
     },
     {
       "type": "Microsoft.Compute/virtualMachines/extensions",
