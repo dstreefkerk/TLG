@@ -157,28 +157,7 @@
         }
       },
       "resources": [
-        {
-          "name": "[concat(parameters('vmName'),'/vstsAgent')]",
-          "type": "Microsoft.Compute/virtualMachines/extensions",
-          "location": "[parameters('SharedVmConfig').location]",
-          "apiVersion": "2017-12-01",
-          "dependsOn": [
-            "[parameters('vmName')]"
-          ],
-          "properties": {
-            "publisher": "Microsoft.Compute",
-            "type": "CustomScriptExtension",
-            "typeHandlerVersion": "1.9",
-            "settings": {
-              "fileUris": [
-                "[uri(parameters('_artifactsLocation'), concat(variables('powerShell').folder, '/', variables('powerShell').script, parameters('_artifactsLocationSasToken')))]"
-              ]
-            },
-            "protectedSettings": {
-              "commandToExecute": "[concat('powershell.exe -ExecutionPolicy Unrestricted -Command \"& {', './', variables('powerShell').script, ' ', variables('powerShell').parameters, '}\"')]"
-            }
-          }
-        }
+        
       ]
     },
     {
