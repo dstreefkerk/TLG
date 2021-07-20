@@ -25,28 +25,81 @@
     },
 
     "vstsPersonalAccessToken": {
-      "type": "securestring"
+      "type": "securestring",
+      "metadata": {
+        "description": "The personal access token to connect to VSTS"
+      }
     },
     "vstsAgentCount": {
-      "type": "int"
+      "type": "int",
+      "metadata": {
+        "description": "The number of Visual Studio Team Services agents to be configured on the Virtual Machine. Default is 3"
+      },
+      "allowedValues": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "defaultValue": 1
     },
     "vstsDeploymentGroupName": {
-      "type": "string"
+      "type": "string",
+      "metadata": {
+        "description": "The Visual Studio Team Services agent deployment group name"
+      }
     },
     "vstsCollectionName": {
-      "type": "string"
+      "type": "string",
+      "metadata": {
+        "description": "The Visual Studio Team Services agent deployment collection name"
+      }
     },
     "vstsProjectName": {
-      "type": "string"
+      "type": "string",
+      "metadata": {
+        "description": "The Visual Studio Team Services agent deployment project name"
+      }
     },
     "vstsServerUrl": {
-      "type": "string"
+      "type": "string",
+      "metadata": {
+        "description": "Your DevOps URL"
+      }
     },
     "modules": {
-      "type": "array"
+      "type": "array",
+      "metadata": {
+        "description": "Enter the Module(s) to install including the Version"
+      },
+      "defaultValue": [
+        {
+          "name": "AzureRM",
+          "version": "5.6.0"
+        },
+        {
+          "name": "AzureAD",
+          "version": "2.0.1.3"
+        },
+        {
+          "name": "posh-git",
+          "version": "0.7.1"
+        }
+      ]
     },
     "_artifactsLocation": {
-      "type": "string"
+      "type": "string",
+      "metadata": {
+        "description": "The base URI where artifacts required by this template are located. When the template is deployed using the accompanying scripts, a private location in the subscription will be used and this value will be automatically generated."
+      },
+      "defaultValue": "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/201-vm-vsts-agent"
+    },
+    "_artifactsLocationSasToken": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The sasToken required to access _artifactsLocation.  When the template is deployed using the accompanying scripts, a sasToken will be automatically generated."
+      },
+      "defaultValue": ""
     }
   },
   "variables": {
@@ -56,7 +109,7 @@
     "powerShell": {
       "script": "InstallVstsAgent.ps1",
       "folder": "scripts",
-      "parameters": "[concat(' -PersonalAccessToken ', parameters('vstsPersonalAccessToken'), ' -AgentCount ', parameters('vstsAgentCount'), ' -Modules ', variables('modules'), '-DeploymentGroupName' , parameters('vstsDeploymentGroupName'), ' -CollectionName ', parameters('vstsCollectionName'), ' -ProjectName ', parameters('vstsProjectName'), ' -ServerUrl ', parameters('vstsServerUrl'), ' -DeploymentAgentTags ''DC'' ')]"
+      "parameters": "[concat(' -PersonalAccessToken ', parameters('vstsPersonalAccessToken'), ' -AgentCount ', parameters('vstsAgentCount'), ' -Modules ', variables('modules'), '-DeploymentGroupName' , parameters('vstsDeploymentGroupName'), ' -CollectionName ', parameters('vstsCollectionName'), ' -ProjectName ', parameters('vstsProjectName'), ' -ServerUrl ', parameters('vstsServerUrl'))]"
     },
     "modules": "[replace(replace(replace(replace(replace(string(parameters('modules')), '[{\"', '@(@{'), '\":\"', concat(' = ', variables('singleQuote'))), '\",\"', concat(variables('singleQuote'), '; ')), '\"},{\"', concat(variables('singleQuote'), '}, @{')), '\"}]', concat(variables('singleQuote'), '})'))]"
 
@@ -105,39 +158,27 @@
       },
       "resources": [
         {
-          "name": "microsoft.vsts-agent-windows-20210720080008",
-          "apiVersion": "2015-01-01",
-          "type": "Microsoft.Resources/deployments",
-          "properties": {
-            "mode": "incremental",
-            "templateLink": {
-              "uri": "https://catalogartifact.azureedge.net/publicartifactsmigration/microsoft.vsts-agent-windows-arm.1.0.4/Artifacts/MainTemplate.json"
-            },
-            "parameters": {
-              "vmName": {
-                "value": "[parameters('vmName')]"
-              },
-              "location": {
-                "value": "[parameters('SharedVmConfig').location]"
-              },
-              "VSTSAccountUrl": {
-                "value": "[parameters('vstsServerUrl')]"
-              },
-              "TeamProject": {
-                "value": "[parameters('vstsDeploymentGroupName')]"
-              },
-              "DeploymentGroup": {
-                "value": "[parameters('vstsProjectName')]"
-              },
-              "PATToken": {
-                "value": "[parameters('vstsPersonalAccessToken')]"
-              }
-            }
-          },
+          "name": "vstsAgent",
+          "type": "Microsoft.Compute/virtualMachines/extensions",
+          "location": "[parameters('SharedVmConfig').location]",
+          "apiVersion": "2017-12-01",
           "dependsOn": [
-            "[concat('Microsoft.Compute/virtualMachines/', parameters('vmName'))]"
-          ]
-        }       
+            "[parameters('vmName')]"
+          ],
+          "properties": {
+            "publisher": "Microsoft.Compute",
+            "type": "CustomScriptExtension",
+            "typeHandlerVersion": "1.9",
+            "settings": {
+              "fileUris": [
+                "[uri(parameters('_artifactsLocation'), concat(variables('powerShell').folder, '/', variables('powerShell').script, parameters('_artifactsLocationSasToken')))]"
+              ]
+            },
+            "protectedSettings": {
+              "commandToExecute": "[concat('powershell.exe -ExecutionPolicy Unrestricted -Command \"& {', './', variables('powerShell').script, ' ', variables('powerShell').parameters, '}\"')]"
+            }
+          }
+        }
       ]
     },
     {
