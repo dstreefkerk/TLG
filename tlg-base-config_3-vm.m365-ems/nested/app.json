@@ -158,7 +158,7 @@
       },
       "resources": [
         {
-          "name": "vstsAgent",
+          "name": "[concat(parameters('vmName'),'/vstsAgent')]",
           "type": "extensions",
           "location": "[parameters('SharedVmConfig').location]",
           "apiVersion": "2017-03-30",
@@ -311,28 +311,7 @@
         "targetResourceId": "[resourceId('Microsoft.Compute/virtualMachines',parameters('vmName'))]"
       }
     },
-    {
-      "name": "[concat(parameters('vmName'),'/vstsAgent')]",
-      "type": "Microsoft.Compute/virtualMachines/extensions",
-      "location": "[parameters('SharedVmConfig').location]",
-      "apiVersion": "2017-12-01",
-      "dependsOn": [
-        "[variables('names').vm]"
-      ],
-      "properties": {
-        "publisher": "Microsoft.Compute",
-        "type": "CustomScriptExtension",
-        "typeHandlerVersion": "1.9",
-        "settings": {
-          "fileUris": [
-            "[uri(parameters('_artifactsLocation'), concat(variables('powerShell').folder, '/', variables('powerShell').script, parameters('SharedVmConfig').SasToken))]"
-          ]
-        },
-        "protectedSettings": {
-          "commandToExecute": "[concat('powershell.exe -ExecutionPolicy Unrestricted -Command \"& {', './', variables('powerShell').script, ' ', variables('powerShell').parameters, '}\"')]"
-        }
-      }
-    },
+   
     {
       "name": "sqlInstall",
       "type": "Microsoft.Compute/virtualMachines/extensions",
