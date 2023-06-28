@@ -4,10 +4,10 @@
 
 Last updated _7/24/2018_
 
-<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fmaxskunkworks%2Ftlg%2Fmaster%2Ftlg-base-config_3-vm%2Fazuredeploy.json" target="_blank">
+<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fdstreefkerk%2Ftlg%2Fmaster%2Ftlg-base-config_3-vm%2Fazuredeploy.json" target="_blank">
 <img src="http://azuredeploy.net/deploybutton.png"/>
 </a>
-<a href="http://armviz.io/#/?load=https%3A%2F%2Fraw.githubusercontent.com%2Fmaxskunkworks%2Ftlg%2Fmaster%2Ftlg-base-config_3-vm%2Fazuredeploy.json" target="_blank">
+<a href="http://armviz.io/#/?load=https%3A%2F%2Fraw.githubusercontent.com%2Fdstreefkerk%2Ftlg%2Fmaster%2Ftlg-base-config_3-vm%2Fazuredeploy.json" target="_blank">
 <img src="http://armviz.io/visualizebutton.png"/>
 </a>
 
@@ -30,7 +30,7 @@ Use of a custom client image is required because the Windows 10 gallery image is
 You can deploy this template in one of two ways:
 
 + Click the "Deploy to Azure" button to open the deployment UI in the Azure portal
-+ Execute the PowerShell script at https://raw.githubusercontent.com/maxskunkworks/tlg/master/tlg-base-config_3-vm/scripts/Deploy-TLG.ps1 on your local computer.
++ Execute the PowerShell script at https://raw.githubusercontent.com/dstreefkerk/tlg/master/tlg-base-config_3-vm/scripts/Deploy-TLG.ps1 on your local computer.
 
 Prior to deploying the template, have the following information ready:
 
